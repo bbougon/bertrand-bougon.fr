@@ -1,0 +1,14 @@
+Bertrand Bougon:
+  name        : "Bertrand Bougon"
+  bio         : "Developer, eXtreme Programmer, TTD lover, DDD practitioner"
+  avatar      : "assets/images/1597274_10152207602554268_1039019181_o.jpg"
+  links:
+    - label: "Email"
+      icon: "fas fa-fw fa-envelope-square"
+      url: "mailto:bertrand.bougon@gmail.com"
+    - label: "Website"
+      icon: "fas fa-fw fa-link"
+      url: "https://www.bertrand-bougon.fr"
+    - label: "Twitter"
+      icon: "fab fa-fw fa-twitter-square"
+      url: "https://twitter.com/BBougon"
