@@ -38,6 +38,6 @@ gem "jekyll-include-cache", "~> 0.2.1"
 
 gem "kramdown-parser-gfm", "~> 1.1"
 
-gem "minimal-mistakes-jekyll", "~> 4.24"
-
 gem "jekyll-spaceship", "~> 0.10.2"
+
+gem "github-pages", "~> 227"
