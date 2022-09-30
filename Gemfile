@@ -41,3 +41,4 @@ group :jekyll_plugins do
   gem "jekyll-include-cache", "~> 0.2.1"
   gem "jekyll-spaceship", "~> 0.10.2"
 end
+gem "minimal-mistakes-jekyll", "~> 4.24"

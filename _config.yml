@@ -30,9 +30,9 @@ url: "https://www.bertrand-bougon.fr" # the base hostname & protocol for your si
 twitter_username: "Bbougon"
 github_username:  "bbougon"
 repository: "bbougon/bertrand-bougon.fr"
+theme: "minimal-mistakes-jekyll"
 
 # Build settings
-remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 minimal_mistakes_skin: "dark"
 plugins:
   - jekyll-feed

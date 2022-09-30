@@ -1,4 +1,4 @@
 # bertrand-bougon.fr
 
 
-testoutille
+`bundle exec jekyll serve`
