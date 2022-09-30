@@ -32,12 +32,12 @@ gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
 # do not have a Java counterpart.
 gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
 
+gem "kramdown-parser-gfm", "~> 1.1"
 gem "webrick", "~> 1.7"
 
-gem "jekyll-include-cache", "~> 0.2.1"
+gem "github-pages", "~> 227", group: :jekyll_plugins
 
-gem "kramdown-parser-gfm", "~> 1.1"
-
-gem "jekyll-spaceship", "~> 0.10.2"
-
-gem "github-pages", "~> 227"
+group :jekyll_plugins do
+  gem "jekyll-include-cache", "~> 0.2.1"
+  gem "jekyll-spaceship", "~> 0.10.2"
+end
