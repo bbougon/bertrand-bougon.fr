@@ -1,0 +1,17 @@
+name: Deploy bertrand-bougon.fr
+
+on:
+  workflow_run:
+    workflows: [build]
+    types:
+      - completed
+
+jobs:
+  jekyll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚀 deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
