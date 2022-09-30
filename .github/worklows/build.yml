@@ -2,9 +2,7 @@ name: Build bertrand-bougon.fr
 
 on:
   push:
-    branches:
-      - gh-pages
-      - main
+    branches: ["gh-pages"]
     workflow_dispatch:
 
 permissions:
