@@ -220,7 +220,7 @@ await handleEvents({
 
 #### Configure docker
 **docker-compose volumes to persist sqlite data :**
-```dockerfile
+```yaml
   agent:
     build:
       context: ..
@@ -257,7 +257,7 @@ await handleEvents({
     restart: unless-stopped
 ```
 **docker-compose configure redis :**
-```dockerfile
+```yaml
 version: '3.4'
 
 services:
@@ -278,7 +278,7 @@ services:
 ```
 **docker-compose configure main app :**
 
-```dockerfile
+```yaml
 
   app:
     build:
