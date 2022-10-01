@@ -20,11 +20,9 @@
 
 title: Bertrand Bougon
 name: Bertrand Bougon
-email:
+email: contact@bertrand-bougon.fr
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  Development, eXtreme Programming, Agile
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.bertrand-bougon.fr" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: "Bbougon"
@@ -35,9 +33,10 @@ theme: "minimal-mistakes-jekyll"
 # Build settings
 minimal_mistakes_skin: "dark"
 plugins:
-  - jekyll-feed
   - jekyll-include-cache
   - jekyll-spaceship
+
+markdown: kramdown
 
 defaults:
   # _posts
@@ -49,7 +48,7 @@ defaults:
       author_profile: true
       read_time: true
       comments: true
-      share: true
+      share: false
       related: true
   # _pages
   - scope:

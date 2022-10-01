@@ -5,7 +5,7 @@ Bertrand Bougon:
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
-      url: "mailto:"
+      url: "mailto:contact@bertrand-bougon.fr"
     - label: "Website"
       icon: "fas fa-fw fa-link"
       url: "https://www.bertrand-bougon.fr"
