@@ -11,6 +11,43 @@ proud about what you've done and god it's good to feel proud about something you
 ## The context
 With one of my colleague, we were working on a solution that would ensure a proper graceful shutdown for a `NodeJS` application.
 
+Below is a minimized C4 model.
+
+```plantuml!
+@startuml
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!include ICONURL/devicons/react.puml
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!include ICONURL/devicons/nodejs.puml
+
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Container.puml
+
+skinparam backgroundColor #BBB
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User", "A person using our system and interested about retrieving data from our service.")
+
+System_Ext(extserv, "External service", "An external service pushing events on our REST API.")
+System_Ext(redis, "Redis", "The redis server responsible to queue the messages received on events resource.")
+System_Ext(database, "Events database", "The database where events are stored.")
+
+
+System_Boundary(system, "Our system") {
+    Container(agent, "Agent", "The agent responsible to check queues and instantiate queue consumers.", $sprite="nodejs")
+    Container(ra, "REST Application", "Delivers REST resources.", $sprite="nodejs")
+
+    Rel(extserv, ra, "Post events")
+    Rel(ra, redis, "Publish events on a queue")
+
+}
+
+Rel(user, system, "Uses the service")
+Rel(agent, redis, "Check/read queues")
+Rel(agent, database, "Persist events")
+
+@enduml
+```
+
 **The problem :**
 - Asynchronous services to process thousands of data that gives business insight for our clients (message loss tolerance is 0)
 - A parent process forking a child process to instantiate a redis consumer queue
@@ -93,7 +130,7 @@ to the forked child. Which can be resumed to:
 Still, we are slowed down by the all process and feedback loop. Let's take a step back for a moment and see if we don't 
 have a solution to drop our feedback loop.
 
-### How to drop feedback loop
+### How to drop feedback loop?
 - By removing the actions that take time
 - By decreasing the number of actions
 
@@ -110,6 +147,164 @@ In our context it was obvious we should target our local development environment
         commit id: "docker-compose expose network"
         commit id: "docker-compose volumes to persist sqlite data"
         commit id: "implement sqlite repository"
+        commit id: "identify a local strategy test"
+```
+
+#### Identify a local strategy test
+How to prove that our workaround is working?
+1. Run the app on a docker container
+2. Run a redis service on a docker container
+3. Send a few thousand requests on the resource exposed to handle events
+4. Check that redis queues are created and populated
+5. Store the events in a database
+6. Expose the database file on a docker volume (we need to have a persistent db file that is updated after each restart)
+7. Run a `docker stop CONTAINER` command
+8. Check that the numbers add up between the events stored in database znd the events left in the queue
+9. Restart the docker container
+10. Check the redis queue is consumed
+11. Re-run from step **7**
+
+#### Implement sqlite repository
+**Prerequisites :** `npm install sqlite sqlite3`
+
+**Purpose :**
+- Persist our events on a local database
+- No dependency with a distant service to persist data during test sessions on a local environment
+- Easily inspect results during test sessions
+
+Fortunately we did some weeks ago a refactoring work to add some abstraction and separation of concerns regarding our persistence layer.
+Basically, we use the `Repository` pattern ([See Eric Evans DDD blue book](https://www.eyrolles.com/Informatique/Livre/domain-driven-design-9780321125217/)).
+
+Thanks to this pattern and the previous work, what we needed is:
+```typescript
+export interface Repository<T> {
+    persist(entity: T): Promise<void>
+}
+
+abstract class AbstractSQLiteEntitiesRepository<T> implements Repository<T> {
+
+    async persist(entities: T): Promise<void> {
+        return Promise.resolve({
+            /*
+            persist the entities
+             */
+        })
+    }
+}
+
+export type EventsRepository = Repository<Events>
+
+export class SQLiteEventsRepository
+  extends AbstractSQLiteEntitiesRepository<Events>
+  implements EventsRepository
+{
+    query(entities: Events): Promise<void> {
+        return Promise.resolve(
+            /*
+            run the query
+             */
+        )
+    }
+}
+
+// And then we replace the actual repository injection
+
+await handleEvents({
+    events: SQLiteEventsRepository, // SQLiteEventsRepository instead of DistantEventsRepository
+})
+```
+
+#### Configure docker
+**docker-compose volumes to persist sqlite data :**
+
+For redis: 
+```dockerfile
+version: '3.4'
+
+services:
+
+  redis:
+    image: redis:6.2.7-alpine
+    container_name: redis
+    healthcheck:
+      test: redis-cli -p 6379 ping > /dev/null && echo OK
+      retries: 3
+      timeout: 3s
+    ports:
+      - "6379:6379"
+    volumes:
+      - "./volumes/redis/data:/data"
+    network_mode: bridge
+    restart: unless-stopped
+```
+
+For the agent:
+```dockerfile
+  agent:
+    build:
+      context: ..
+      dockerfile: deployments/app/Dockerfile
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+        NPM_VERSION: ${NPM_VERSION}
+        PORT: ${PORT}
+      target: local-agent
+    links:
+      - redis
+    environment:
+      - NODE_ENV
+      - LOG_LEVEL
+      - SQLITE_FILEPATH
+      - QUEUE_TYPE
+      - QUEUE_CONSUMER_TYPE
+      - QUEUE_BATCH_SIZE
+      - QUEUE_AGENT_WORKER_TTL
+      - QUEUE_BATCH_TIMEOUT
+      - QUEUE_POLL_FREQ
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - 3001:3000
+    network_mode: bridge
+
+    volumes:
+      - "./volumes/db/data:/usr/db/data"
+    restart: unless-stopped
+```
+
+And finally the main app:
+```dockerfile
+
+  app:
+    build:
+      context: ..
+      dockerfile: deployments/app/Dockerfile
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+        NPM_VERSION: ${NPM_VERSION}
+        PORT: ${PORT}
+      target: app
+    ports:
+      - "${PORT}:${PORT}"
+    healthcheck:
+      test: curl -f -s -o /dev/null http://localhost:${PORT}/health && echo OK
+      retries: 3
+      timeout: 3s
+    links:
+      - redis
+    environment:
+      - NODE_ENV
+      - LOG_LEVEL
+      - PORT
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.connector.rule=Host(`host.${BASE_DOMAIN:-localdomain}`)
+      - traefik.http.routers.connector.entrypoints=websecure
+      - traefik.http.routers.connector.tls.certresolver=myresolver
+    network_mode: bridge
+    restart: unless-stopped
 ```
 
 
