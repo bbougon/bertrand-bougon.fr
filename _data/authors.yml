@@ -12,3 +12,6 @@ Bertrand Bougon:
     - label: "Twitter"
       icon: "fab fa-fw fa-twitter-square"
       url: "https://twitter.com/BBougon"
+    - label: "Github"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/bbougon/"
