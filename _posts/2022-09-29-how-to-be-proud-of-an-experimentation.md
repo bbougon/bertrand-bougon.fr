@@ -87,7 +87,7 @@ BTW, thanks to [@Arnaud Bailly](https://twitter.com/dr_c0d3) and his wonderful [
 Understand the current behaviour which can be resumed to:
 
 ```mermaid!
-%%{init: {'theme': 'base', 'themeVariables': { 'darkMode': 'true', 'primaryColor': '#CDCCFF'}}}%%
+%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': 'true', 'primaryColor': '#CDCCFF'}}}%%
     sequenceDiagram
         Parent Process-->>Agent: instantiate a new agent
         Agent->>Agent: check availability
@@ -109,7 +109,7 @@ What we intend to do, listen to a `SIGTERM` signal from the main node process, a
 to the forked child. Which can be resumed to:
 
 ```mermaid!
-%%{init: {'theme': 'base', 'themeVariables': { 'darkMode': 'true', 'primaryColor': '#CDCCFF'}}}%%
+%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': 'true', 'primaryColor': '#CDCCFF'}}}%%
     sequenceDiagram
         Parent Process-->>Agent: instantiate a new agent
         Agent->>Agent: check availability
@@ -142,7 +142,7 @@ In our context it was obvious we should target our local development environment
 ... we don't have a maintained local environment 😱, no problem, let's experiment and identify what is needed to have a local environment.
 
 ```mermaid!
-%%{init: {'theme': 'base',  'themeVariables': { 'darkMode': 'true'}, 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'local-env'}}}%%
+%%{init: {'theme': 'dark',  'themeVariables': { 'darkMode': 'true'}, 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'local-env'}}}%%
     gitGraph
         commit id: "run docker"
         commit id: "docker-compose configure env variable"
