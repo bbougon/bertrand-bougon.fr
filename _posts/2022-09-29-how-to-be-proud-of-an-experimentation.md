@@ -131,9 +131,9 @@ to the forked child. Which can be resumed to:
 ```
 
 Still, we are slowed down by the all process and feedback loop. Let's take a step back for a moment and see if we don't 
-have a solution to drop our feedback loop.
+have a solution to reduce our feedback loop.
 
-### How to drop feedback loop?
+### How to reduce feedback loop?
 - By removing the actions that take time
 - By decreasing the number of actions
 
