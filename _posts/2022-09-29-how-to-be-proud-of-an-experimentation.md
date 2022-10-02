@@ -458,6 +458,18 @@ At the end we succeeded to
 Having the smallest possible feedback loop when building a software is a target to reach and think about all the time.
 
 This is one of the pillar in continuous improvement.
+
+**Where is the proud in all of that?**
+
+Of course, we are proud to have succeeded but there is more than this. We took the time to experiment, 
+to switch uncertainty to certainty. We improved the product to first ease our colleagues work and second to be more efficient
+for our users in the future, because what you do as a software developer is not only for yourself, it is for all the people
+involved one day or another in the product you've been working on.
+
+## Thanks
+- To Stéfanie who took the time to read it and gave me feedbacks (the conclusion about the proud is on her 🙏)
+- To Marc who gave me some tricks about the look and feel
+
 ## The code
 
 ### The agent
